@@ -1,0 +1,17 @@
+.idea
+.vscode
+*.log
+node_modules
+.nyc_output
+.gitattributes
+.all-contributorsrc
+.editorconfig
+.gpmrc
+.gitignore
+.github
+*.test.js
+contributing.md
+.travis.yml
+test
+*.lock
+utils.js
