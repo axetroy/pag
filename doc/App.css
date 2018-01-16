@@ -1,6 +1,14 @@
+/*@import "~normalize.css";*/
+
 * {
   padding: 0;
   margin: 0;
+}
+
+input,
+textarea {
+  border: 0;
+  outline: none;
 }
 
 .split {
@@ -22,4 +30,11 @@
 .gutter.gutter-vertical {
   background-color: #eeeeee;
   cursor: ew-resize;
+}
+
+.split .box {
+  padding: 0 0.5rem;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
 }
