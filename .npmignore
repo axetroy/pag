@@ -14,5 +14,5 @@ contributing.md
 .travis.yml
 test
 *.lock
-utils.js
-online
+doc
+pag
