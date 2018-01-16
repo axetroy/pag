@@ -42,10 +42,6 @@ test("transform with var", t => {
         type: "ExpressionStatement",
         expression: {
           type: "Expression",
-          callee: {
-            type: "Identifier",
-            name: "call"
-          },
           arguments: [
             {
               type: "Variable",
@@ -72,10 +68,6 @@ test("transform with double var", t => {
         type: "ExpressionStatement",
         expression: {
           type: "Expression",
-          callee: {
-            type: "Identifier",
-            name: "call"
-          },
           arguments: [
             {
               type: "Variable",
@@ -100,10 +92,6 @@ test("transform with double var", t => {
         type: "ExpressionStatement",
         expression: {
           type: "Expression",
-          callee: {
-            type: "Identifier",
-            name: "call"
-          },
           arguments: [
             {
               type: "Variable",

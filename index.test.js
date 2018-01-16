@@ -47,6 +47,20 @@ test("compile with invalid var", t => {
       name: "Mary"
     });
   });
+
+  t.throws(function() {
+    compiler("Hello {{_name}}", {
+      name: "Mary"
+    });
+  });
+});
+
+test("empty string in expression", t => {
+  let r = compiler("Hello {{ name}}", {
+    name: "Mary"
+  });
+  // ignore the whiteSpace
+  t.deepEqual(r, "Hello Mary");
 });
 
 test("Invalid expression", t => {
@@ -54,4 +68,11 @@ test("Invalid expression", t => {
     name: "Mary"
   });
   t.deepEqual(r, "Hello Mary {");
+});
+
+test("Compile with number", t => {
+  const r = compiler("Hello {{name}}, now is 21th.", {
+    name: "Mary"
+  });
+  t.deepEqual(r, "Hello Mary, now is 21th.");
 });

@@ -33,8 +33,6 @@ function traverser(ast, visitor) {
         break;
       case "Whitespace":
         break;
-      case "Variable":
-        break;
       case "Symbol":
         break;
       default:
@@ -82,13 +80,11 @@ function transformer(ast) {
         });
       }
     },
-    Variable: function(node, parent) {
-      parent._context.push({
-        type: "Variable",
-        value: node.value
-      });
-    },
     Whitespace(node, parent) {
+      // 如果空格是在表达式中的，那么这个空格会被忽略
+      if (parent && parent.type === "Expression") {
+        return;
+      }
       parent._context.push({
         type: "Whitespace",
         value: node.value
@@ -110,10 +106,6 @@ function transformer(ast) {
     Expression: function(node, parent) {
       let expression = {
         type: "Expression",
-        callee: {
-          type: "Identifier",
-          name: "call"
-        },
         arguments: []
       };
 
