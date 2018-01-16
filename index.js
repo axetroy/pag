@@ -1,3 +1,8 @@
+/**
+ * Generate the token
+ * @param input
+ * @returns {Array}
+ */
 function tokenizer(input) {
   let current = 0;
   const tokens = [];
@@ -25,6 +30,10 @@ function tokenizer(input) {
         const WHITESPACE = /\s/;
         if (WHITESPACE.test(char)) {
           current++;
+          tokens.push({
+            type: "whitespace",
+            value: char
+          });
           continue;
         }
 
@@ -36,21 +45,18 @@ function tokenizer(input) {
             value += char;
             char = input[++current];
           }
-
-          tokens.push({
-            type: "number",
-            value: value
-          });
+          // 如果后面的字符不为空字符串或为字符串的借宿
+          tokens.push({ type: "number", value: value });
 
           continue;
         }
 
-        let LETTERS = /[\w'"-_]/i;
+        let LETTERS = /[\w'"-_$]/i;
         if (LETTERS.test(char)) {
           let value = "";
 
           // 同样，我们用一个循环遍历所有的字母，把它们存入 value 中。
-          while (LETTERS.test(char)) {
+          while (char !== void 0 && LETTERS.test(char)) {
             value += char;
             char = input[++current];
           }
@@ -67,14 +73,11 @@ function tokenizer(input) {
     }
   }
 
-  return tokens.map((t, i) => {
-    t.i = i;
-  return t;
-});
+  return tokens;
 }
 
 /**
- * parse the token
+ * Parse the token
  * @param tokens
  * @returns {{type: string, body: Array}}
  */
@@ -83,7 +86,7 @@ function parser(tokens) {
 
   function walk() {
     // walk函数里，我们从当前token开始
-    var token = tokens[current];
+    let token = tokens[current];
 
     // 对于不同类型的结点，对应的处理方法也不同，我们从 `number` 类型的 token 开始。
     // 检查是不是 `number` 类型
@@ -128,7 +131,7 @@ function parser(tokens) {
           while (
             token.type !== "paren" ||
             (token.type === "paren" && token.value !== "}")
-            ) {
+          ) {
             // 我们调用 `walk` 函数，它将会返回一个结点，然后我们把这个节点
             // 放入 `node.params` 中。
             node.params.push(walk());
@@ -183,17 +186,23 @@ function parser(tokens) {
 
     if (token.type === "string") {
       current++;
-
-      const node = {
+      return {
         type: "StringLiteral",
         value: token.value
       };
+    }
 
-      return node;
+    // 空白字符串
+    if (token.type === "whitespace") {
+      current++;
+      return {
+        type: "Whitespace",
+        value: token.value
+      };
     }
 
     // 同样，如果我们遇到了一个类型未知的结点，就抛出一个错误。
-    throw new TypeError(token.type + ":" + token.value);
+    throw new TypeError("Invalid type" + token.type + ":" + token.value);
   }
 
   // 现在，我们创建 AST，根结点是一个类型为 `Program` 的结点。
@@ -227,7 +236,7 @@ function traverser(ast, visitor) {
   // 传入到 visitor 中相应的处理函数那里。
   function traverseNode(node, parent) {
     // 首先我们看看 visitor 中有没有对应 `type` 的处理函数。
-    var method = visitor[node.type];
+    const method = visitor[node.type];
 
     // 如果有，那么我们把 `node` 和 `parent` 都传入其中。
     if (method) {
@@ -255,6 +264,9 @@ function traverser(ast, visitor) {
 
       // 如果是 `NumberLiterals`，那么就没有任何子结点了，所以我们直接 break
       case "StringLiteral":
+        break;
+
+      case "Whitespace":
         break;
 
       // 如果是 `NumberLiterals`，那么就没有任何子结点了，所以我们直接 break
@@ -328,6 +340,12 @@ function transformer(ast) {
         value: node.value
       });
     },
+    Whitespace(node, parent) {
+      parent._context.push({
+        type: "Whitespace",
+        value: node.value
+      });
+    },
     // 下一个，`CallExpressions`。
     Expression: function(node, parent) {
       // 我们创建一个 `CallExpression` 结点，里面有一个嵌套的 `Identifier`。
@@ -379,7 +397,7 @@ function codeGenerator(node, context = {}) {
     // 如果是 `Program` 结点，那么我们会遍历它的 `body` 属性中的每一个结点，并且递归地
     // 对这些结点再次调用 codeGenerator，再把结果打印进入新的一行中。
     case "Program":
-      return node.body.map(v => codeGenerator(v, context)).join(" ");
+      return node.body.map(v => codeGenerator(v, context)).join('');
 
     // 对于 `ExpressionStatements`,我们对它的 expression 属性递归调用，同时加入一个
     // 分号。
@@ -392,7 +410,7 @@ function codeGenerator(node, context = {}) {
       // 在表达式中，替换变量
       return node.arguments
         .map(node => codeGenerator(node, context))
-    .join(", ");
+        .join(", ");
 
     // 对于 `Identifiers` 我们只是返回 `node` 的 name。
     case "Identifier":
@@ -406,13 +424,17 @@ function codeGenerator(node, context = {}) {
     case "StringLiteral":
       return node.value;
 
+    // 对于 `NumberLiterals` 我们只是返回 `node` 的 value
+    case "Whitespace":
+      return node.value;
+
     case "Variable":
       console.log(node.value, context);
       return context[node.value];
 
     // 如果我们不能识别这个结点，那么抛出一个错误。
     default:
-      throw new TypeError(node.type);
+      throw new TypeError(`Invalid Type ${node.type}`);
   }
 }
 
