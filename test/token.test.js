@@ -98,3 +98,78 @@ test("Basic tokenizer with var", t => {
     }
   ]);
 });
+
+test("Basic tokenizer with double var", t => {
+  const tokens = tokenizer("{{name}} is {{age}} years old");
+
+  t.deepEqual(tokens, [
+    {
+      type: "paren",
+      value: "{"
+    },
+    {
+      type: "paren",
+      value: "{"
+    },
+    {
+      type: "string",
+      value: "name"
+    },
+    {
+      type: "paren",
+      value: "}"
+    },
+    {
+      type: "paren",
+      value: "}"
+    },
+    {
+      type: "whitespace",
+      value: " "
+    },
+    {
+      type: "string",
+      value: "is"
+    },
+    {
+      type: "whitespace",
+      value: " "
+    },
+    {
+      type: "paren",
+      value: "{"
+    },
+    {
+      type: "paren",
+      value: "{"
+    },
+    {
+      type: "string",
+      value: "age"
+    },
+    {
+      type: "paren",
+      value: "}"
+    },
+    {
+      type: "paren",
+      value: "}"
+    },
+    {
+      type: "whitespace",
+      value: " "
+    },
+    {
+      type: "string",
+      value: "years"
+    },
+    {
+      type: "whitespace",
+      value: " "
+    },
+    {
+      type: "string",
+      value: "old"
+    }
+  ]);
+});

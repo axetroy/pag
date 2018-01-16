@@ -46,3 +46,60 @@ test("parse with var", t => {
     ]
   });
 });
+
+test("parse with double var", t => {
+  const tokens = tokenizer("{{name}} is {{age}} years old");
+  const ast = parser(tokens);
+
+  t.deepEqual(ast, {
+    type: "Program",
+    body: [
+      {
+        type: "Expression",
+        params: [
+          {
+            type: "StringLiteral",
+            value: "name"
+          }
+        ]
+      },
+      {
+        type: "Whitespace",
+        value: " "
+      },
+      {
+        type: "StringLiteral",
+        value: "is"
+      },
+      {
+        type: "Whitespace",
+        value: " "
+      },
+      {
+        type: "Expression",
+        params: [
+          {
+            type: "StringLiteral",
+            value: "age"
+          }
+        ]
+      },
+      {
+        type: "Whitespace",
+        value: " "
+      },
+      {
+        type: "StringLiteral",
+        value: "years"
+      },
+      {
+        type: "Whitespace",
+        value: " "
+      },
+      {
+        type: "StringLiteral",
+        value: "old"
+      }
+    ]
+  });
+});

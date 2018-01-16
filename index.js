@@ -402,8 +402,6 @@ function codeGenerator(node, context = {}) {
     case "ExpressionStatement":
       return codeGenerator(node.expression, context); // << (...因为我们喜欢用*正确*的方式写代码)
 
-    // 对于 `CallExpressions`，我们会打印出 `callee`，接着是一个左圆括号，然后对
-    // arguments 递归调用 codeGenerator，并且在它们之间加一个逗号，最后加上右圆括号。
     case "Expression":
       // 在表达式中，替换变量
       return node.arguments

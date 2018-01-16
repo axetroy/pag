@@ -57,3 +57,77 @@ test("transform with var", t => {
     ]
   });
 });
+
+test("transform with double var", t => {
+  const tokens = tokenizer("{{name}} is {{age}} years old");
+
+  const ast = parser(tokens);
+
+  const newAst = transformer(ast);
+
+  t.deepEqual(newAst, {
+    type: "Program",
+    body: [
+      {
+        type: "ExpressionStatement",
+        expression: {
+          type: "Expression",
+          callee: {
+            type: "Identifier",
+            name: "call"
+          },
+          arguments: [
+            {
+              type: "Variable",
+              value: "name"
+            }
+          ]
+        }
+      },
+      {
+        type: "Whitespace",
+        value: " "
+      },
+      {
+        type: "StringLiteral",
+        value: "is"
+      },
+      {
+        type: "Whitespace",
+        value: " "
+      },
+      {
+        type: "ExpressionStatement",
+        expression: {
+          type: "Expression",
+          callee: {
+            type: "Identifier",
+            name: "call"
+          },
+          arguments: [
+            {
+              type: "Variable",
+              value: "age"
+            }
+          ]
+        }
+      },
+      {
+        type: "Whitespace",
+        value: " "
+      },
+      {
+        type: "StringLiteral",
+        value: "years"
+      },
+      {
+        type: "Whitespace",
+        value: " "
+      },
+      {
+        type: "StringLiteral",
+        value: "old"
+      }
+    ]
+  });
+});

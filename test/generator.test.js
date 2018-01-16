@@ -30,3 +30,19 @@ test("generator with var", t => {
 
   t.deepEqual(codeWithContext, "hello world");
 });
+
+test("generator with double var", t => {
+  const tokens = tokenizer("{{name}} is {{age}} years old");
+
+  const ast = parser(tokens);
+
+  const newAst = transformer(ast);
+
+  const codeWithoutContext = codeGenerator(newAst);
+
+  t.deepEqual(codeWithoutContext, " is  years old");  // name 和 age都没有， 会被替换为''字符串
+
+  const codeWithContext = codeGenerator(newAst, { name: "Mary", age: 21 });
+
+  t.deepEqual(codeWithContext, "Mary is 21 years old");
+});
