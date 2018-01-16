@@ -1,6 +1,6 @@
 {
   "name": "@axetroy/pag",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A lightweight template engine",
   "main": "index.js",
   "scripts": {
