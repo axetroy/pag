@@ -1,6 +1,6 @@
 {
   "name": "@axetroy/pag",
-  "version": "0.4.0",
+  "version": "0.0.1",
   "description": "A lightweight template engine",
   "main": "index.js",
   "scripts": {
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/axetroy/godefer.git"
+    "url": "git+https://github.com/axetroy/pag.git"
   },
   "author": "Axetroy",
   "license": "Apache",
   "bugs": {
-    "url": "https://github.com/axetroy/godefer/issues"
+    "url": "https://github.com/axetroy/pag/issues"
   },
-  "homepage": "https://github.com/axetroy/godefer#readme",
+  "homepage": "https://github.com/axetroy/pag#readme",
   "dependencies": {},
   "devDependencies": {
     "ava": "^0.24.0",
