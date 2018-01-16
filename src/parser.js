@@ -102,8 +102,6 @@ function parser(tokens) {
             break;
           }
         }
-        current++;
-        return node;
       }
     }
 
