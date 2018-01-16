@@ -1,7 +1,7 @@
 {
-  "name": "godefer",
+  "name": "@axetroy/pag",
   "version": "0.4.0",
-  "description": "Golang Defer implement in Javascript",
+  "description": "A lightweight template engine",
   "main": "index.js",
   "scripts": {
     "test": "nyc ava"
