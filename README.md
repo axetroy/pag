@@ -15,8 +15,6 @@
 
 TODO
 
-And here is the Golang code doing same with above
-
 
 ## Contributing
 
