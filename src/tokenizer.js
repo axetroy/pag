@@ -26,7 +26,7 @@ function tokenizer(input) {
         current++;
         continue;
       default:
-        // 跳过空白字符
+        // 如果是空白符
         const WHITESPACE = /\s/;
         if (WHITESPACE.test(char)) {
           current++;
@@ -37,17 +37,16 @@ function tokenizer(input) {
           continue;
         }
 
+        // 如果是数字
         const NUMBERS = /[0-9]/;
         if (NUMBERS.test(char)) {
           let value = "";
-
           while (NUMBERS.test(char)) {
             value += char;
             char = input[++current];
           }
-          // 如果后面的字符不为空字符串或为字符串的借宿
+          // 如果后面的字符不为空字符串或为字符串的结束
           tokens.push({ type: "number", value: value });
-
           continue;
         }
 
@@ -72,13 +71,9 @@ function tokenizer(input) {
         ++current;
 
         tokens.push({
-          type: 'symbol',
+          type: "symbol",
           value: char
         });
-
-        // continue;
-
-        // throw new Error("Invalid grammar :" + char);
     }
   }
 
