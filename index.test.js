@@ -48,3 +48,10 @@ test("compile with invalid var", t => {
     });
   });
 });
+
+test("Invalid expression", t => {
+  const r = compiler("Hello {{name}} {", {
+    name: "Mary"
+  });
+  t.deepEqual(r, "Hello Mary {");
+});

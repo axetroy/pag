@@ -1,5 +1,5 @@
 import test from "ava";
-import { tokenizer } from "../index";
+import {tokenizer} from "../index";
 
 console.log(process.pid);
 
@@ -19,6 +19,49 @@ test("Basic tokenizer", t => {
       type: "string",
       value: "world"
     }
+  ]);
+});
+
+test("Invalid Expression", t => {
+  const tokens = tokenizer("hello {{name}} {");
+
+  t.deepEqual(tokens, [
+    {
+      type: "string",
+      value: "hello"
+    },
+    {
+      type: "whitespace",
+      value: " "
+    },
+    {
+      type: "paren",
+      value: "{"
+    },
+    {
+      type: "paren",
+      value: "{"
+    },
+    {
+      type: "string",
+      value: "name"
+    },
+    {
+      type: "paren",
+      value: "}"
+    },
+    {
+      type: "paren",
+      value: "}"
+    },
+    {
+      type: "whitespace",
+      value: " "
+    },
+    {
+      type: "paren",
+      value: "{"
+    },
   ]);
 });
 
@@ -178,38 +221,38 @@ test("Basic tokenizer with special characters", t => {
   const tokens = tokenizer("Hello, world!");
 
   t.deepEqual(tokens, [
-    { type: "string", value: "Hello" },
-    { type: "symbol", value: "," },
-    { type: "whitespace", value: " " },
-    { type: "string", value: "world" },
-    { type: "symbol", value: "!" }
+    {type: "string", value: "Hello"},
+    {type: "symbol", value: ","},
+    {type: "whitespace", value: " "},
+    {type: "string", value: "world"},
+    {type: "symbol", value: "!"}
   ]);
 
   const tokens2 = tokenizer("~!@#$%^&*()_+{}:?></*-.");
 
   t.deepEqual(tokens2, [
-    { type: "symbol", value: "~" },
-    { type: "symbol", value: "!" },
-    { type: "symbol", value: "@" },
-    { type: "symbol", value: "#" },
-    { type: "symbol", value: "$" },
-    { type: "symbol", value: "%" },
-    { type: "symbol", value: "^" },
-    { type: "symbol", value: "&" },
-    { type: "symbol", value: "*" },
-    { type: "symbol", value: "(" },
-    { type: "symbol", value: ")" },
-    { type: "string", value: "_" },
-    { type: "symbol", value: "+" },
-    { type: "paren", value: "{" },
-    { type: "paren", value: "}" },
-    { type: "symbol", value: ":" },
-    { type: "symbol", value: "?" },
-    { type: "symbol", value: ">" },
-    { type: "symbol", value: "<" },
-    { type: "symbol", value: "/" },
-    { type: "symbol", value: "*" },
-    { type: "symbol", value: "-" },
-    { type: "symbol", value: "." }
+    {type: "symbol", value: "~"},
+    {type: "symbol", value: "!"},
+    {type: "symbol", value: "@"},
+    {type: "symbol", value: "#"},
+    {type: "symbol", value: "$"},
+    {type: "symbol", value: "%"},
+    {type: "symbol", value: "^"},
+    {type: "symbol", value: "&"},
+    {type: "symbol", value: "*"},
+    {type: "symbol", value: "("},
+    {type: "symbol", value: ")"},
+    {type: "string", value: "_"},
+    {type: "symbol", value: "+"},
+    {type: "paren", value: "{"},
+    {type: "paren", value: "}"},
+    {type: "symbol", value: ":"},
+    {type: "symbol", value: "?"},
+    {type: "symbol", value: ">"},
+    {type: "symbol", value: "<"},
+    {type: "symbol", value: "/"},
+    {type: "symbol", value: "*"},
+    {type: "symbol", value: "-"},
+    {type: "symbol", value: "."}
   ]);
 });

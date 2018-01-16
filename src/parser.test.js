@@ -18,6 +18,43 @@ test("Basic parse", t => {
   });
 });
 
+test("Invalid Expression", t => {
+  const tokens = tokenizer("hello {{name}} {");
+
+  const ast = parser(tokens);
+
+  t.deepEqual(ast, {
+    type: "Program",
+    body: [
+      {
+        type: "StringLiteral",
+        value: "hello"
+      },
+      {
+        type: "Whitespace",
+        value: " "
+      },
+      {
+        type: "Expression",
+        params: [
+          {
+            type: "StringLiteral",
+            value: "name"
+          }
+        ]
+      },
+      {
+        type: "Whitespace",
+        value: " "
+      },
+      {
+        type: "StringLiteral",
+        value: "{"
+      }
+    ]
+  });
+});
+
 test("parse with var", t => {
   const tokens = tokenizer("hello {{name}}");
 

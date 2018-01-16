@@ -22,7 +22,11 @@ function parser(tokens) {
       if (token.value === "{") {
         const nextToken = tokens[current + 1];
 
-        if (!nextToken) {
+        if (
+          !nextToken ||
+          (nextToken.type !== "paren" && nextToken.value !== "{")
+        ) {
+          current++;
           return {
             type: "StringLiteral",
             value: token.value
@@ -36,10 +40,12 @@ function parser(tokens) {
             params: []
           };
 
-          ++current;
+          ++current; // 跳过 {
+          ++current; // 跳过下一个 {
 
-          token = tokens[++current];
+          token = tokens[current];
 
+          // 不断循环，遇见 } 则停止
           while (
             token.type !== "paren" ||
             (token.type === "paren" && token.value !== "}")
@@ -48,24 +54,32 @@ function parser(tokens) {
             token = tokens[current];
           }
 
-          token = tokens[++current];
+          // 解析表达式完成
+          // 接下来看看下面两个token，是否是 }} 结尾
+          token = tokens[current];
+          const nextToken = tokens[++current];
 
-          if (token.type !== "paren" && token.value !== "}") {
+          if (
+            token.type === "paren" &&
+            token.value === "}" &&
+            nextToken &&
+            nextToken.type === token.type &&
+            nextToken.value === token.value
+          ) {
+            current++; // 跳过 }
+            return node;
+          } else {
             throw new Error("Expression {{ must with }} at the end");
           }
-
-          current++;
-
-          return node;
         } else {
           current++;
-
           return {
             type: "StringLiteral",
             value: token.value
           };
         }
       } else {
+        // 如果字符串是 {}, 但是它不是表达式
         const node = {
           type: "StringLiteral",
           value: token.value
