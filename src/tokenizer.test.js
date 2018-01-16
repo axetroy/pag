@@ -173,3 +173,43 @@ test("Basic tokenizer with double var", t => {
     }
   ]);
 });
+
+test("Basic tokenizer with special characters", t => {
+  const tokens = tokenizer("Hello, world!");
+
+  t.deepEqual(tokens, [
+    { type: "string", value: "Hello" },
+    { type: "symbol", value: "," },
+    { type: "whitespace", value: " " },
+    { type: "string", value: "world" },
+    { type: "symbol", value: "!" }
+  ]);
+
+  const tokens2 = tokenizer("~!@#$%^&*()_+{}:?></*-.");
+
+  t.deepEqual(tokens2, [
+    { type: "symbol", value: "~" },
+    { type: "symbol", value: "!" },
+    { type: "symbol", value: "@" },
+    { type: "symbol", value: "#" },
+    { type: "symbol", value: "$" },
+    { type: "symbol", value: "%" },
+    { type: "symbol", value: "^" },
+    { type: "symbol", value: "&" },
+    { type: "symbol", value: "*" },
+    { type: "symbol", value: "(" },
+    { type: "symbol", value: ")" },
+    { type: "string", value: "_" },
+    { type: "symbol", value: "+" },
+    { type: "paren", value: "{" },
+    { type: "paren", value: "}" },
+    { type: "symbol", value: ":" },
+    { type: "symbol", value: "?" },
+    { type: "symbol", value: ">" },
+    { type: "symbol", value: "<" },
+    { type: "symbol", value: "/" },
+    { type: "symbol", value: "*" },
+    { type: "symbol", value: "-" },
+    { type: "symbol", value: "." }
+  ]);
+});

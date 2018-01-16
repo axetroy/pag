@@ -131,3 +131,22 @@ test("transform with double var", t => {
     ]
   });
 });
+
+test("transform with special characters", t => {
+  const tokens = tokenizer("Hello, world!");
+
+  const ast = parser(tokens);
+
+  const newAst = transformer(ast);
+
+  t.deepEqual(newAst, {
+    type: "Program",
+    body: [
+      { type: "StringLiteral", value: "Hello" },
+      { type: "Symbol", value: "," },
+      { type: "Whitespace", value: " " },
+      { type: "StringLiteral", value: "world" },
+      { type: "Symbol", value: "!" }
+    ]
+  });
+});

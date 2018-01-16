@@ -103,3 +103,19 @@ test("parse with double var", t => {
     ]
   });
 });
+
+test("parse with with special characters", t => {
+  const tokens = tokenizer("Hello, world!");
+  const ast = parser(tokens);
+
+  t.deepEqual(ast, {
+    type: "Program",
+    body: [
+      { type: "StringLiteral", value: "Hello" },
+      { type: "Symbol", value: "," },
+      { type: "Whitespace", value: " " },
+      { type: "StringLiteral", value: "world" },
+      { type: "Symbol", value: "!" }
+    ]
+  });
+});
