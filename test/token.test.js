@@ -1,5 +1,5 @@
 import test from "ava";
-import {tokenizer} from "../index";
+import { tokenizer } from "../index";
 
 console.log(process.pid);
 
@@ -60,6 +60,41 @@ test("Basic tokenizer with numberic", t => {
     {
       type: "string",
       value: "th"
+    }
+  ]);
+});
+
+test("Basic tokenizer with var", t => {
+  const tokens = tokenizer("Hello {{name}}");
+
+  t.deepEqual(tokens, [
+    {
+      type: "string",
+      value: "Hello"
+    },
+    {
+      type: "whitespace",
+      value: " "
+    },
+    {
+      type: "paren",
+      value: "{"
+    },
+    {
+      type: "paren",
+      value: "{"
+    },
+    {
+      type: "string",
+      value: "name"
+    },
+    {
+      type: "paren",
+      value: "}"
+    },
+    {
+      type: "paren",
+      value: "}"
     }
   ]);
 });
