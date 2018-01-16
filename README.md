@@ -10,6 +10,11 @@
 [![npm version](https://badge.fury.io/js/rfcdate.svg)](https://badge.fury.io/js/rfcdate)
 ![Size](https://github-size-badge.herokuapp.com/axetroy/pag.svg)
 
+[Try it out](https://axetroy.github.io/pag)
+
+> This is a template engine base on AST
+> It's helpful to learn how to write a compiler
+
 ## Usage
 
 ```javascript
