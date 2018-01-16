@@ -1,0 +1,25 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+.split {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.split.split-horizontal,
+.gutter.gutter-horizontal {
+  height: 100%;
+  float: left;
+}
+
+.gutter.gutter-horizontal {
+  background-color: #eeeeee;
+  cursor: ew-resize;
+}
+
+.gutter.gutter-vertical {
+  background-color: #eeeeee;
+  cursor: ew-resize;
+}
