@@ -6,7 +6,8 @@
   "scripts": {
     "test": "nyc ava",
     "start": "parcel ./doc/index.html -d pag",
-    "build": "rm -rf ./cache && rm -rf ./pag && parcel build doc/index.html -d pag"
+    "build": "rm -rf ./cache && rm -rf ./pag && parcel build doc/index.html -d pag",
+    "docs": "npm run build && gh-pages -d ./pag"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "coveralls": "^3.0.0",
+    "gh-pages": "^1.1.0",
     "normalize.css": "^7.0.0",
     "nyc": "^11.4.1",
     "parcel-bundler": "^1.4.1",
