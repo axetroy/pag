@@ -13,7 +13,7 @@
 [Try it out](https://axetroy.github.io/pag)
 
 > This is a template engine base on AST
-> It's helpful to learn how to write a compiler
+> It's useful to help you learn how to write a compiler
 
 ## Usage
 
