@@ -9,6 +9,7 @@ function parser(tokens) {
   function walk() {
     let token = tokens[current];
 
+    // 如果是数字
     if (token.type === "number") {
       current++;
       return {

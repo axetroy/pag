@@ -62,3 +62,27 @@ test("generator with special characters", t => {
 
   t.deepEqual(codeWithContext, "Hello, world!");
 });
+
+test("generator with . property operator", t => {
+  const tokens = tokenizer(
+    "Hello, {{name}}!, I am from {{address.city}}, Here is the code: {{address.code}}"
+  );
+
+  const ast = parser(tokens);
+
+  const newAst = transformer(ast);
+
+  const codeWithoutContext = generator(newAst);
+
+  t.deepEqual(codeWithoutContext, "Hello, !, I am from , Here is the code: ");
+
+  const codeWithContext = generator(newAst, {
+    name: "Mary",
+    address: {
+      city: "NewYork",
+      code: 1000
+    }
+  });
+
+  t.deepEqual(codeWithContext, "Hello, Mary!, I am from NewYork, Here is the code: 1000");
+});

@@ -138,3 +138,45 @@ test("transform with special characters", t => {
     ]
   });
 });
+
+test("transform with . property operator", t => {
+  const tokens = tokenizer("Hello, {{people.name.nickname}}");
+
+  const ast = parser(tokens);
+
+  const newAst = transformer(ast);
+
+  t.deepEqual(newAst, {
+    type: "Program",
+    body: [
+      {
+        type: "StringLiteral",
+        value: "Hello"
+      },
+      {
+        type: "Symbol",
+        value: ","
+      },
+      {
+        type: "Whitespace",
+        value: " "
+      },
+      {
+        type: "ExpressionStatement",
+        expression: {
+          type: "Expression",
+          arguments: [
+            {
+              type: "ExpressionStatement",
+              expression: {
+                type: "MemberExpression",
+                object: "people",
+                paths: ["name", "nickname"]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  });
+});

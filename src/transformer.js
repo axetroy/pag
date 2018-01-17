@@ -5,20 +5,22 @@
  */
 function traverser(ast, visitor) {
   function traverseArray(array, parent) {
-    array.forEach(child => traverseNode(child, parent));
+    array.forEach((child, i) =>
+      traverseNode(child, parent, array[i - 1], array[i + 1])
+    );
   }
 
   /**
-   * 遍历节点
+   *
    * @param node
    * @param parent
+   * @param prev
+   * @param next
    */
-  function traverseNode(node, parent) {
+  function traverseNode(node, parent, prev, next) {
     const method = visitor[node.type];
 
-    if (method) {
-      method(node, parent);
-    }
+    method && method(node, parent, prev, next);
 
     switch (node.type) {
       case "Program":
@@ -61,7 +63,7 @@ function transformer(ast) {
         value: node.value
       });
     },
-    StringLiteral: function(node, parent) {
+    StringLiteral: function(node, parent, prev, next) {
       // 如果父级是表达式
       // 那么这里的字符串应该是变量
       if (parent.type === "Expression") {
@@ -69,10 +71,18 @@ function transformer(ast) {
         if (!/^[a-z]/i.test(node.value)) {
           throw new Error("Invalid Var: " + node.value);
         }
-        parent._context.push({
-          type: "Variable",
-          value: node.value
-        });
+
+        if (
+          (prev && prev.type === "Symbol") ||
+          (next && next.type === "Symbol")
+        ) {
+          // ignore
+        } else {
+          parent._context.push({
+            type: "Variable",
+            value: node.value
+          });
+        }
       } else {
         parent._context.push({
           type: "StringLiteral",
@@ -90,12 +100,63 @@ function transformer(ast) {
         value: node.value
       });
     },
-    Symbol(node, parent) {
+    Symbol(node, parent, prev, next) {
       // 表达式里面不能包含符号
+      // 除了属性操作符 .
       if (parent.type === "Expression") {
-        throw new Error(
-          `The Expression can not include Symbol "${node.value}"`
-        );
+        if (node.value === ".") {
+          if (!prev || !next) {
+            throw new Error(`Expression with property select is invalid`);
+          }
+
+          // 前后的属性必须是字符串字面量(会被解析成为变量)
+          if (prev.type !== "StringLiteral" || next.type !== "StringLiteral") {
+            throw new Error("Invalid Object");
+          }
+
+          let expression = {
+            type: "MemberExpression",
+            object: prev.value,
+            paths: []
+          };
+
+          let i = parent.params.findIndex(v => v === node);
+
+          while (next && i < parent.params.length) {
+            next = parent.params[++i];
+            if (!next) break;
+            // 奇数，应该是路径
+            if (i % 2 === 0) {
+              expression.paths.push(next.value);
+            } else {
+              if (next.type !== "Symbol") {
+                throw new Error(`Invalid expression`);
+              }
+            }
+          }
+
+          const last = parent._context[parent._context.length - 1];
+
+          // 如果上一段，是一个表达式的话，那么会被忽略
+          if (
+            last &&
+            last.type === "ExpressionStatement" &&
+            last.expression.type === "MemberExpression"
+          ) {
+            return;
+          }
+
+          parent._context.push({
+            type: "ExpressionStatement",
+            expression: expression
+          });
+
+          return;
+        } else {
+          throw new Error(
+            `The Expression can not include Symbol "${node.value}"`
+          );
+        }
       }
 
       parent._context.push({
