@@ -105,13 +105,16 @@ function transformer(ast) {
       // 除了属性操作符 .
       if (parent.type === "Expression") {
         if (node.value === ".") {
-          if (!prev || !next) {
-            throw new Error(`Expression with property select is invalid`);
+          if (!prev) {
+            throw new Error(`Invalid Expression: .${next ? next.value : ""}`);
+          }
+          if (!next) {
+            throw new Error(`Invalid Expression: ${prev ? prev.value : ""}.`);
           }
 
           // 前后的属性必须是字符串字面量(会被解析成为变量)
           if (prev.type !== "StringLiteral" || next.type !== "StringLiteral") {
-            throw new Error("Invalid Object");
+            throw new Error(`Invalid Expression: ${prev.value}.${next.value}`);
           }
 
           let expression = {
