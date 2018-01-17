@@ -16,3 +16,5 @@ test
 *.lock
 doc
 pag
+.cache
+.babelrc
