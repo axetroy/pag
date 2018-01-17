@@ -43,6 +43,15 @@ function parser(tokens) {
           ++current; // 跳过 {
           ++current; // 跳过下一个 {
 
+          // 如果以为 {{ 结尾， 那么这个不算表达式
+          if (tokens[current + 1] === void 0) {
+            --current;
+            return {
+              type: "StringLiteral",
+              value: "{"
+            };
+          }
+
           token = tokens[current];
 
           // 不断循环，遇见 } 则停止

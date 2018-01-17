@@ -70,6 +70,13 @@ test("Invalid expression", t => {
   t.deepEqual(r, "Hello Mary {");
 });
 
+test("Invalid expression", t => {
+  const r = compiler("Hello {{name}} {{", {
+    name: "Mary"
+  });
+  t.deepEqual(r, "Hello Mary {{");
+});
+
 test("Compile with number", t => {
   const r = compiler("Hello {{name}}, now is 21th.", {
     name: "Mary"
