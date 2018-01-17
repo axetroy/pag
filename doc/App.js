@@ -3,12 +3,13 @@ import "./App.css";
 import { tokenizer, parser, transformer, generator } from "../index";
 import Split from "split.js/split";
 
+const pkg = require("../package");
+
 class SplitComponent extends Component {
   constructor() {
     super();
     this.state = {
-      defaultText:
-        `
+      defaultText: `
 Q: Hello {{name}}, How old are you?
 
     A: I am {{age}} years old.
@@ -125,6 +126,10 @@ Q: What is this?
         <div className="split split-horizontal" ref={"b"}>
           <div className="box">
             <h3>AST Tree</h3>
+            <div style={{ position: "absolute", top: "2rem", right: "2rem" }}>
+              <p>Version: {pkg.version}</p>
+              <a href="https://github.com/axetroy/pag">Github</a>
+            </div>
             <pre>{this.state.ast}</pre>
           </div>
         </div>
