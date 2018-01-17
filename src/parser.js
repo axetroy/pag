@@ -95,6 +95,8 @@ function parser(tokens) {
             token = tokens[current]; // 如果是表达式, 那么这个的token的值应该为 }
             nextToken = tokens[++current]; // 如果是表达式，那么这个token的值也应该为 }, 以 }} 结尾
 
+            current++; // 指针往前一格
+
             // 如果表达式不完整 {{name}
 
             // 此时的token，要么是}, 要么是undefined
@@ -102,7 +104,6 @@ function parser(tokens) {
             if (!token) {
               // 虽然前面有{{，但是有吗没有相应的字段了
               // 所以，它依旧只是普通的字符串
-              current++;
               return {
                 type: "StringLiteral",
                 value: "{{" + node.params.map(n => n.value).join("")
@@ -110,7 +111,6 @@ function parser(tokens) {
             }
 
             if (!nextToken) {
-              current++;
               return {
                 type: "StringLiteral",
                 value: token.value
@@ -120,11 +120,18 @@ function parser(tokens) {
             // 此时，已经能确定是 {{} 的形式
 
             // 如果下一个token，不是}
+            // 比如 {{name}abc nextToken.value = a
+            // 那么它也只是普通的字符串而已
             if (nextToken.type !== "paren" || nextToken.value !== "}") {
-              throw new Error("Invalid Expression.");
+              return {
+                type: "StringLiteral",
+                value:
+                  "{{" +
+                  node.params.map(n => n.value).join("") +
+                  "}" +
+                  nextToken.value
+              };
             }
-
-            current++;
 
             return node;
           case "}":
