@@ -8,12 +8,40 @@ class SplitComponent extends Component {
     super();
     this.state = {
       defaultText:
-        "Q: Hello {{name}}, How old are you? \n\nA: I am {{age}} years old.",
+        `
+Q: Hello {{name}}, How old are you?
+
+    A: I am {{age}} years old.
+
+Q: Where You live in?
+
+    A: I live in {{address.city}} {{address.street}}
+
+Q: Is this Cool?
+
+    A: May be.
+    
+Q: What is this?
+    
+    A: Just a template engine. It can help you to learn how to write a compiler.
+`,
       output: "",
-      variables: JSON.stringify({ name: "Mary", age: 21 }, null, 2),
+      variables: JSON.stringify(
+        {
+          name: "Mary",
+          age: 21,
+          address: {
+            city: "NewYork",
+            street: "Chinatown"
+          }
+        },
+        null,
+        2
+      ),
       ast: ""
     };
   }
+
   componentDidMount() {
     const { a, b, c, d, e } = this.refs;
     Split([a, b], { sizes: [40, 60] });
