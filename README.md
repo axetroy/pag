@@ -3,11 +3,11 @@
 [![Greenkeeper badge](https://badges.greenkeeper.io/axetroy/pag.svg)](https://greenkeeper.io/)
 [![Build Status](https://travis-ci.org/axetroy/pag.svg?branch=master)](https://travis-ci.org/axetroy/pag)
 [![Coverage Status](https://coveralls.io/repos/github/axetroy/pag/badge.svg?branch=master)](https://coveralls.io/github/axetroy/pag?branch=master)
-[![Dependency](https://david-dm.org/axetroy/rfcdate.svg)](https://david-dm.org/axetroy/rfcdate)
+[![Dependency](https://david-dm.org/axetroy/pag.svg)](https://david-dm.org/axetroy/pag)
 ![License](https://img.shields.io/badge/license-Apache-green.svg)
 [![Prettier](https://img.shields.io/badge/Code%20Style-Prettier-green.svg)](https://github.com/prettier/prettier)
 ![Node](https://img.shields.io/badge/node-%3E=6.0-blue.svg?style=flat-square)
-[![npm version](https://badge.fury.io/js/rfcdate.svg)](https://badge.fury.io/js/rfcdate)
+[![npm version](https://badge.fury.io/js/@axetroy/pag.svg)](https://badge.fury.io/js/@axetroy/pag)
 ![Size](https://github-size-badge.herokuapp.com/axetroy/pag.svg)
 
 [Try it out](https://axetroy.github.io/pag)
