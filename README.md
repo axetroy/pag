@@ -7,7 +7,7 @@
 ![License](https://img.shields.io/badge/license-Apache-green.svg)
 [![Prettier](https://img.shields.io/badge/Code%20Style-Prettier-green.svg)](https://github.com/prettier/prettier)
 ![Node](https://img.shields.io/badge/node-%3E=6.0-blue.svg?style=flat-square)
-[![npm version](https://badge.fury.io/js/@axetroy/pag.svg)](https://badge.fury.io/js/@axetroy/pag)
+[![npm version](https://badge.fury.io/js/%40axetroy%2Fpag.svg)](https://badge.fury.io/js/%40axetroy%2Fpag)
 ![Size](https://github-size-badge.herokuapp.com/axetroy/pag.svg)
 
 [Try it out](https://axetroy.github.io/pag)
