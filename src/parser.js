@@ -4,145 +4,141 @@
  * @returns {{type: string, body: Array}}
  */
 function parser(tokens) {
+  tokens = tokens.map((t, i) => {
+    t.i = i;
+    return t;
+  });
+
   let current = 0;
 
   function walk() {
     let token = tokens[current];
 
-    // 如果是数字
-    if (token.type === "number") {
-      current++;
-      return {
-        type: "NumberLiteral",
-        value: token.value
-      };
-    }
-
-    // 如果是{}
-    if (token.type === "paren") {
-      if (token.value === "{") {
-        const nextToken = tokens[current + 1];
-
-        if (
-          !nextToken ||
-          (nextToken.type !== "paren" && nextToken.value !== "{")
-        ) {
-          current++;
-          return {
-            type: "StringLiteral",
-            value: token.value
-          };
-        }
-
-        // 如果上一个节点也是{，那么是一个表达式
-        if (nextToken.type === "paren" && nextToken.value === "{") {
-          const node = {
-            type: "Expression",
-            params: []
-          };
-
-          ++current; // 跳过 {
-          ++current; // 跳过下一个 {
-
-          // 如果以为 {{ 结尾， 那么这个不算表达式
-          if (tokens[current + 1] === void 0) {
-            --current;
-            return {
-              type: "StringLiteral",
-              value: "{"
-            };
-          }
-
-          token = tokens[current];
-
-          // 不断循环，遇见 } 则停止
-          while (
-            token.type !== "paren" ||
-            (token.type === "paren" && token.value !== "}")
-          ) {
-            node.params.push(walk());
-            token = tokens[current];
-          }
-
-          // 解析表达式完成
-          // 接下来看看下面两个token，是否是 }} 结尾
-          token = tokens[current];
-          const nextToken = tokens[++current];
-
-          if (
-            token.type === "paren" &&
-            token.value === "}" &&
-            nextToken &&
-            nextToken.type === token.type &&
-            nextToken.value === token.value
-          ) {
-            current++; // 跳过 }
-            return node;
-          } else {
-            throw new Error("Expression {{ must with }} at the end");
-          }
-        } else {
-          current++;
-          return {
-            type: "StringLiteral",
-            value: token.value
-          };
-        }
-      } else {
-        // 如果字符串是 {}, 但是它不是表达式
-        const node = {
+    switch (token.type) {
+      case "number":
+        current++;
+        return {
+          type: "NumberLiteral",
+          value: token.value
+        };
+      case "string":
+        current++;
+        return {
           type: "StringLiteral",
           value: token.value
         };
-        while (current < tokens.length) {
-          const next = tokens[++current];
-          if (next) {
-            if (next.type !== "string") {
-              node.value += next.value;
-            } else if (next.type === "paren") {
-              if (next.value === "{") {
-                break;
-              } else {
-                node.value += next.value;
-              }
-            } else {
-              break;
+      case "whitespace":
+        current++;
+        return {
+          type: "Whitespace",
+          value: token.value
+        };
+      case "symbol":
+        current++;
+        return {
+          type: "Symbol",
+          value: token.value
+        };
+      // 处理 {} 符号
+      case "paren":
+        switch (token.value) {
+          case "{":
+            let nextToken = tokens[current + 1];
+
+            // 如果这个是最后一个字符
+            if (!nextToken) {
+              current++;
+              return {
+                type: "StringLiteral",
+                value: token.value
+              };
             }
-          } else {
-            break;
-          }
+
+            // 下一个token必须是双{{才是表达式，否则只是字符串
+            if (nextToken.type !== "paren" && nextToken.value !== "{") {
+              current++;
+              return {
+                type: "StringLiteral",
+                value: token.value
+              };
+            }
+
+            // 基本确认是一个表达式
+            const node = {
+              type: "Expression",
+              params: []
+            };
+
+            ++current; // 跳过第一个括号 {
+            ++current; // 跳过第二个括号 {
+
+            // 如果以为 {{ 作为结尾，那么自是普通的字符串
+            if (tokens[current + 1] === undefined) {
+              --current;
+              return {
+                type: "StringLiteral",
+                value: token.value
+              };
+            }
+
+            token = tokens[current];
+            nextToken = tokens[current + 1];
+
+            // 找到以 } 字符串，作为表达式的中点，中间的内容全部为表达式的参数
+            while (token && token.type !== "paren" && token.value !== "}") {
+              const s = walk();
+              node.params.push(s);
+              token = tokens[current];
+              nextToken = tokens[current + 1];
+            }
+
+            token = tokens[current]; // 如果是表达式, 那么这个的token的值应该为 }
+            nextToken = tokens[++current]; // 如果是表达式，那么这个token的值也应该为 }, 以 }} 结尾
+
+            // 如果表达式不完整 {{name}
+
+            // 此时的token，要么是}, 要么是undefined
+            // 那么它只作为普通的字符串
+            if (!token) {
+              // 虽然前面有{{，但是有吗没有相应的字段了
+              // 所以，它依旧只是普通的字符串
+              current++;
+              return {
+                type: "StringLiteral",
+                value: "{{" + node.params.map(n => n.value).join("")
+              };
+            }
+
+            if (!nextToken) {
+              current++;
+              return {
+                type: "StringLiteral",
+                value: token.value
+              };
+            }
+
+            // 此时，已经能确定是 {{} 的形式
+
+            // 如果下一个token，不是}
+            if (nextToken.type !== "paren" || nextToken.value !== "}") {
+              throw new Error("Invalid Expression.");
+            }
+
+            current++;
+
+            return node;
+          case "}":
+            // 如果字符串是 }, 那么自是普通的字符串, {{}}的表达式，已经在 {的操作中处理了
+            current++;
+            return {
+              type: "StringLiteral",
+              value: token.value
+            };
         }
-      }
+        break;
+      default:
+        throw new TypeError("Invalid type " + token.type + ":" + token.value);
     }
-
-    // 如果是字符串
-    if (token.type === "string") {
-      current++;
-      return {
-        type: "StringLiteral",
-        value: token.value
-      };
-    }
-
-    // 如果是空白符
-    if (token.type === "whitespace") {
-      current++;
-      return {
-        type: "Whitespace",
-        value: token.value
-      };
-    }
-
-    // 如果是其他的字符
-    if (token.type === "symbol") {
-      current++;
-      return {
-        type: "Symbol",
-        value: token.value
-      };
-    }
-
-    throw new TypeError("Invalid type " + token.type + ":" + token.value);
   }
 
   const ast = {
