@@ -125,3 +125,9 @@ test("Invalid expression", t => {
   });
   t.deepEqual(r, "}}}}");
 });
+
+test("Invalid expression", t => {
+  t.throws(function() {
+    compiler("{{{}}}");
+  });
+});

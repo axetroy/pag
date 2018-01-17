@@ -55,7 +55,7 @@ function parser(tokens) {
             }
 
             // 下一个token必须是双{{才是表达式，否则只是字符串
-            if (nextToken.type !== "paren" && nextToken.value !== "{") {
+            if (nextToken.type !== "paren" || nextToken.value !== "{") {
               current++;
               return {
                 type: "StringLiteral",
@@ -85,7 +85,10 @@ function parser(tokens) {
             nextToken = tokens[current + 1];
 
             // 找到以 } 字符串，作为表达式的中点，中间的内容全部为表达式的参数
-            while (token && token.value !== "}") {
+            while (
+              token &&
+              (token.type !== "paren" || token.value !== "}")
+            ) {
               const s = walk();
               node.params.push(s);
               token = tokens[current];
