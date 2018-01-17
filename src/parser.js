@@ -85,7 +85,7 @@ function parser(tokens) {
             nextToken = tokens[current + 1];
 
             // 找到以 } 字符串，作为表达式的中点，中间的内容全部为表达式的参数
-            while (token && token.type !== "paren" && token.value !== "}") {
+            while (token && token.value !== "}") {
               const s = walk();
               node.params.push(s);
               token = tokens[current];

@@ -111,3 +111,17 @@ test("Invalid expression", t => {
   });
   t.deepEqual(r, "Hello Mary {{}\n}abc");
 });
+
+test("Invalid expression", t => {
+  const r = compiler("{{{{", {
+    name: "Mary"
+  });
+  t.deepEqual(r, "{{{{");
+});
+
+test("Invalid expression", t => {
+  const r = compiler("}}}}", {
+    name: "Mary"
+  });
+  t.deepEqual(r, "}}}}");
+});
