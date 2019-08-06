@@ -1,6 +1,5 @@
 ## A lightweight template engine
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/axetroy/pag.svg)](https://greenkeeper.io/)
 [![Build Status](https://travis-ci.org/axetroy/pag.svg?branch=master)](https://travis-ci.org/axetroy/pag)
 [![Coverage Status](https://coveralls.io/repos/github/axetroy/pag/badge.svg?branch=master)](https://coveralls.io/github/axetroy/pag?branch=master)
 [![Dependency](https://david-dm.org/axetroy/pag.svg)](https://david-dm.org/axetroy/pag)
